@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>&lt; {{ goal.title }} &gt;</title>
+    <title>Study Tracker</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .table-responsive { max-height: 80vh; overflow-y: auto; }
         .sticky-header th { position: sticky; top: 0; background-color: #f8f9fa; z-index: 1; }
         .total-row { font-weight: bold; background-color: #e9ecef; }
     </style>
+    <a href="{% url 'home_detail' goal.id %}">View {{ goal.title }}</a>
 </head>
 <body class="bg-light">
 <div class="container py-4">
@@ -36,7 +37,7 @@
                     <tbody>
                         {% for log in logs %}
                         <tr>
-                            <form action="{% url 'update_log' log.id %}" method="POST">
+                            <form action="{% url 'track_log' log.id %}" method="POST">
                                 {% csrf_token %}
                                 <td>
                                     <input type="checkbox" name="morning_done" class="form-check-input" {% if log.morning_done %}checked{% endif %}>

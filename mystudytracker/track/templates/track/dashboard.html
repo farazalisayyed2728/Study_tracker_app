@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Tracker - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container py-5">
+    <h1 class="mb-4">My Study Goals</h1>
+    <div class="row">
+        {% for goal in goals %}
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">&lt; {{ goal.title }} &gt;</h5>
+                    <p class="card-text">Total Hours Logged: <strong>{{ goal.total_hours }} hrs</strong></p>
+                    <a href="{% url 'home_detail' goal.id %}" class="btn btn-primary">View Tracker Sheet</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <p>No active study goals found. Create one in Django Admin!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+</html>
