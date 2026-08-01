@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-j%s45_e$u5xw4n7rh(=n!c2k80ue=!w^y2_rgo!i^rueu2)a8)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -51,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'mystudytracker.urls'
@@ -85,6 +86,7 @@ DATABASES = {
         conn_max_age=600,
         conn_health_checks=True,
     )
+    
 }
 
 
