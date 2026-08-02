@@ -4,6 +4,10 @@ from django.views.decorators.http import require_POST
 from datetime import timedelta
 from .models import StudyGoal, DailyLog
 from .forms import StudyGoalForm, DailyLogForm
+from django.shortcuts import render, redirect
+from django.contrib.auth import login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
 
 @login_required
 def dashboard(request):
@@ -71,3 +75,23 @@ def toggle_log_status(request, log_id):
         return JsonResponse({'status': 'error', 'message': 'Invalid field'}, status=400)
     except DailyLog.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'Log not found'}, status=404)
+
+
+
+def register(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
+        
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Automatically log in the user after registration
+            messages.success(request, f"Account created successfully! Welcome, {user.username}.")
+            return redirect('dashboard')
+    else:
+        form = UserCreationForm()
+        
+    return render(request, 'registration/register.html', {'form': form})
+
+
