@@ -48,3 +48,26 @@ def create_goal(request):
     else:
         form = StudyGoalForm()
     return render(request, 'track/create_goal.html', {'form': form})
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+import json
+
+@login_required
+@require_POST
+def toggle_log_status(request, log_id):
+    try:
+        log = DailyLog.objects.get(id=log_id, goal__user=request.user)
+        data = json.loads(request.body)
+        
+        # Checkbox field status update
+        field_name = data.get('field')  # 'morning_done', 'evening_done', or 'github_pushed'
+        value = data.get('value')
+        
+        if field_name in ['morning_done', 'evening_done', 'github_pushed']:
+            setattr(log, field_name, value)
+            log.save()
+            return JsonResponse({'status': 'success', 'message': 'Database Updated!'})
+        return JsonResponse({'status': 'error', 'message': 'Invalid field'}, status=400)
+    except DailyLog.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Log not found'}, status=404)
