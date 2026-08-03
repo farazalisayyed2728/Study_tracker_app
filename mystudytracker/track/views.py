@@ -78,20 +78,20 @@ def toggle_log_status(request, log_id):
 
 
 
-def register(request):
-    if request.user.is_authenticated:
-        return redirect('dashboard')
+# def register(request):
+#     if request.user.is_authenticated:
+#         return redirect('dashboard')
         
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            login(request, user)  # Automatically log in the user after registration
-            messages.success(request, f"Account created successfully! Welcome, {user.username}.")
-            return redirect('dashboard')
-    else:
-        form = UserCreationForm()
+#     if request.method == 'POST':
+#         form = UserCreationForm(request.POST)
+#         if form.is_valid():
+#             user = form.save()
+#             login(request, user)  # Automatically log in the user after registration
+#             messages.success(request, f"Account created successfully! Welcome, {user.username}.")
+#             return redirect('dashboard')
+#     else:
+#         form = UserCreationForm()
         
-    return render(request, 'registration/register.html', {'form': form})
+#     return render(request, 'registration/register.html', {'form': form})
 
 
