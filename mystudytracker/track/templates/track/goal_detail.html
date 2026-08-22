@@ -4,79 +4,537 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Study Tracker</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
-        .table-responsive { max-height: 80vh; overflow-y: auto; }
-        .sticky-header th { position: sticky; top: 0; background-color: #f8f9fa; z-index: 1; }
-        .total-row { font-weight: bold; background-color: #e9ecef; }
+        /* ===============================
+           GLOBAL
+        ================================ */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background:
+                radial-gradient(circle at top left, #302b63 0%, transparent 35%),
+                radial-gradient(circle at bottom right, #24243e 0%, transparent 40%),
+                linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1250px;
+        }
+
+
+        /* ===============================
+           HEADER
+        ================================ */
+
+        .page-header {
+            padding: 10px 5px;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin: 0;
+            background: linear-gradient(90deg, #ffffff, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .page-title span {
+            color: #a78bfa;
+        }
+
+
+        /* ===============================
+           BACK BUTTON
+        ================================ */
+
+        .back-btn {
+            border: 1px solid rgba(255,255,255,0.25);
+            color: #ffffff;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 9px 18px;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #ffffff;
+            background: rgba(255,255,255,0.18);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+        }
+
+
+        /* ===============================
+           MAIN CARD
+        ================================ */
+
+        .tracker-card {
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 22px;
+            overflow: hidden;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.35),
+                inset 0 1px 1px rgba(255,255,255,0.08);
+        }
+
+        .tracker-card .card-body {
+            padding: 0;
+        }
+
+
+        /* ===============================
+           TABLE CONTAINER
+        ================================ */
+
+        .table-responsive {
+            max-height: 75vh;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .table-responsive::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-responsive::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: linear-gradient(#8b5cf6, #3b82f6);
+            border-radius: 10px;
+        }
+
+
+        /* ===============================
+           TABLE
+        ================================ */
+
+        table {
+            margin-bottom: 0 !important;
+            border-collapse: separate;
+            border-spacing: 0;
+            color: #ffffff !important;
+        }
+
+        .sticky-header th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+
+            padding: 17px 12px;
+            background: rgba(25, 20, 55, 0.97) !important;
+            color: #c4b5fd !important;
+
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+
+            border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+        }
+
+        tbody tr {
+            transition: all 0.25s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(139,92,246,0.10);
+            transform: scale(1.002);
+        }
+
+        tbody td {
+            padding: 15px 12px;
+            background: rgba(255,255,255,0.025) !important;
+            border-color: rgba(255,255,255,0.10) !important;
+            color: #f8fafc !important;
+        }
+
+
+        /* ===============================
+           CHECKBOX
+        ================================ */
+
+        .form-check-input {
+            width: 21px;
+            height: 21px;
+            cursor: pointer;
+            background-color: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.35);
+        }
+
+        .form-check-input:checked {
+            background-color: #8b5cf6;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 12px rgba(139,92,246,0.6);
+        }
+
+
+        /* ===============================
+           INPUT FIELDS
+        ================================ */
+
+        .form-control {
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.07);
+            color: #ffffff;
+            border-radius: 9px;
+            transition: all 0.25s ease;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-control:focus {
+            color: #ffffff;
+            background: rgba(255,255,255,0.11);
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139,92,246,0.18);
+        }
+
+        input[type="number"] {
+            font-weight: 600;
+        }
+
+
+        /* ===============================
+           GITHUB INPUT
+        ================================ */
+
+        .input-group {
+            min-width: 260px;
+        }
+
+        .input-group-text {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            color: #ffffff;
+        }
+
+
+        /* ===============================
+           SAVE BUTTON
+        ================================ */
+
+        .save-btn {
+            border: none;
+            border-radius: 9px;
+            padding: 7px 17px;
+
+            background: linear-gradient(
+                135deg,
+                #8b5cf6,
+                #6366f1,
+                #3b82f6
+            );
+
+            color: #ffffff;
+            font-weight: 600;
+
+            box-shadow: 0 5px 15px rgba(99,102,241,0.3);
+
+            transition: all 0.3s ease;
+        }
+
+        .save-btn:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow:
+                0 8px 22px rgba(99,102,241,0.5);
+        }
+
+        .save-btn:active {
+            transform: scale(0.96);
+        }
+
+
+        /* ===============================
+           DATE
+        ================================ */
+
+        td strong {
+            color: #c4b5fd;
+        }
+
+
+        /* ===============================
+           TOTAL ROW
+        ================================ */
+
+        .total-row td {
+            padding: 18px 15px;
+            background: linear-gradient(
+                90deg,
+                rgba(139,92,246,0.15),
+                rgba(59,130,246,0.15)
+            ) !important;
+
+            border-top: 1px solid rgba(255,255,255,0.15) !important;
+        }
+
+        .total-row strong {
+            color: #ffffff;
+            font-size: 1rem;
+        }
+
+        .total-badge {
+            padding: 9px 16px;
+            border-radius: 20px;
+
+            background: linear-gradient(
+                135deg,
+                #10b981,
+                #059669
+            );
+
+            color: white;
+            font-size: 0.95rem;
+
+            box-shadow: 0 5px 15px rgba(16,185,129,0.3);
+        }
+
+
+        /* ===============================
+           MOBILE RESPONSIVE
+        ================================ */
+
+        @media (max-width: 768px) {
+
+            .container {
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start !important;
+                gap: 15px;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .back-btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .tracker-card {
+                border-radius: 15px;
+            }
+
+            .sticky-header th {
+                font-size: 0.75rem;
+                padding: 12px 8px;
+            }
+
+            tbody td {
+                padding: 10px 7px;
+            }
+
+            .input-group {
+                min-width: 220px;
+            }
+        }
     </style>
-    <a href="{% url 'home_detail' goal.id %}">View {{ goal.title }}</a>
 </head>
-<body class="bg-light">
+
+<body>
+
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>&lt; {{ goal.title }} &gt;</h2>
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="page-title">
+            &lt; {{ goal.title }} &gt;
+        </h2>
+
+        <a href="{% url 'dashboard' %}" class="btn back-btn">
+            ← Back to Dashboard
+        </a>
+
     </div>
 
-    <div class="card shadow-sm">
+
+    <!-- ================= TRACKER CARD ================= -->
+
+    <div class="tracker-card">
+
         <div class="card-body">
+
             <div class="table-responsive">
+
                 <table class="table table-bordered align-middle text-center">
+
                     <thead class="sticky-header">
+
                         <tr>
-                            <th scope="col">Morning</th>
-                            <th scope="col">Hours</th>
-                            <th scope="col">Evening</th>
-                            <th scope="col">Hours</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">GitHub</th>
-                            <th scope="col">Action</th>
+                            <th>Morning</th>
+                            <th>Hours</th>
+                            <th>Evening</th>
+                            <th>Hours</th>
+                            <th>Date</th>
+                            <th>GitHub</th>
+                            <th>Action</th>
                         </tr>
+
                     </thead>
+
+
                     <tbody>
+
                         {% for log in logs %}
+
                         <tr>
+
                             <form action="{% url 'track_log' log.id %}" method="POST">
+
                                 {% csrf_token %}
+
                                 <td>
-                                    <input type="checkbox" name="morning_done" class="form-check-input" {% if log.morning_done %}checked{% endif %}>
+                                    <input
+                                        type="checkbox"
+                                        name="morning_done"
+                                        class="form-check-input"
+                                        {% if log.morning_done %}checked{% endif %}
+                                    >
                                 </td>
+
                                 <td>
-                                    <input type="number" step="0.5" name="morning_hours" value="{{ log.morning_hours }}" class="form-control text-center" style="width: 80px; margin: auto;">
+                                    <input
+                                        type="number"
+                                        step="0.5"
+                                        name="morning_hours"
+                                        value="{{ log.morning_hours }}"
+                                        class="form-control text-center"
+                                        style="width: 80px; margin: auto;"
+                                    >
                                 </td>
+
                                 <td>
-                                    <input type="checkbox" name="evening_done" class="form-check-input" {% if log.evening_done %}checked{% endif %}>
+                                    <input
+                                        type="checkbox"
+                                        name="evening_done"
+                                        class="form-check-input"
+                                        {% if log.evening_done %}checked{% endif %}
+                                    >
                                 </td>
+
                                 <td>
-                                    <input type="number" step="0.5" name="evening_hours" value="{{ log.evening_hours }}" class="form-control text-center" style="width: 80px; margin: auto;">
+                                    <input
+                                        type="number"
+                                        step="0.5"
+                                        name="evening_hours"
+                                        value="{{ log.evening_hours }}"
+                                        class="form-control text-center"
+                                        style="width: 80px; margin: auto;"
+                                    >
                                 </td>
-                                <td><strong>{{ log.date|date:"d-m-Y" }}</strong></td>
+
                                 <td>
+                                    <strong>
+                                        {{ log.date|date:"d-m-Y" }}
+                                    </strong>
+                                </td>
+
+                                <td>
+
                                     <div class="input-group">
+
                                         <div class="input-group-text">
-                                            <input type="checkbox" name="github_pushed" class="form-check-input mt-0" {% if log.github_pushed %}checked{% endif %}>
+
+                                            <input
+                                                type="checkbox"
+                                                name="github_pushed"
+                                                class="form-check-input mt-0"
+                                                {% if log.github_pushed %}checked{% endif %}
+                                            >
+
                                         </div>
-                                        <input type="url" name="github_link" value="{{ log.github_link|default:'' }}" class="form-control" placeholder="Commit URL">
+
+                                        <input
+                                            type="url"
+                                            name="github_link"
+                                            value="{{ log.github_link|default:'' }}"
+                                            class="form-control"
+                                            placeholder="Commit URL"
+                                        >
+
                                     </div>
+
                                 </td>
+
                                 <td>
-                                    <button type="submit" class="btn btn-sm btn-primary">Save</button>
+
+                                    <button
+                                        type="submit"
+                                        class="btn save-btn"
+                                    >
+                                        Save
+                                    </button>
+
                                 </td>
+
                             </form>
+
                         </tr>
+
                         {% endfor %}
+
                     </tbody>
+
+
+                    <!-- ================= TOTAL ================= -->
+
                     <tfoot>
+
                         <tr class="total-row">
-                            <td colspan="4" class="text-end"><strong>Total Hours =</strong></td>
-                            <td colspan="3" class="text-start"><span class="badge bg-success fs-6">{{ goal.total_hours }} Hours</span></td>
+
+                            <td colspan="4" class="text-end">
+                                <strong>Total Hours =</strong>
+                            </td>
+
+                            <td colspan="3" class="text-start">
+
+                                <span class="badge total-badge">
+                                    {{ goal.total_hours }} Hours
+                                </span>
+
+                            </td>
+
                         </tr>
+
                     </tfoot>
+
                 </table>
+
             </div>
+
         </div>
+
     </div>
+
 </div>
+
 </body>
 </html>
