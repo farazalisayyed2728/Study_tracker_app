@@ -1,0 +1,413 @@
+/* ================================
+   GLOBAL
+================================ */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+
+    background:
+        radial-gradient(circle at top left, #302b63 0%, transparent 35%),
+        radial-gradient(circle at bottom right, #24243e 0%, transparent 40%),
+        linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+
+    color: #ffffff;
+}
+
+.container {
+    max-width: 1250px;
+}
+
+
+/* ================================
+   HEADER
+================================ */
+
+.page-header {
+    padding: 10px 5px;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin: 0;
+
+    background: linear-gradient(
+        90deg,
+        #ffffff,
+        #a78bfa,
+        #60a5fa
+    );
+
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+/* ================================
+   BACK BUTTON
+================================ */
+
+.back-btn {
+    border: 1px solid rgba(255,255,255,0.25);
+
+    color: #ffffff;
+    background: rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(10px);
+
+    border-radius: 12px;
+    padding: 9px 18px;
+
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    color: #ffffff;
+
+    background: rgba(255,255,255,0.18);
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+
+/* ================================
+   MAIN TRACKER CARD
+================================ */
+
+.tracker-card {
+    border: 1px solid rgba(255,255,255,0.15);
+
+    border-radius: 22px;
+
+    overflow: hidden;
+
+    background: rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.35),
+        inset 0 1px 1px rgba(255,255,255,0.08);
+}
+
+.tracker-card .card-body {
+    padding: 0;
+}
+
+
+/* ================================
+   TABLE SCROLL
+================================ */
+
+.table-responsive {
+    max-height: 75vh;
+
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.table-responsive::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+        #8b5cf6,
+        #3b82f6
+    );
+
+    border-radius: 10px;
+}
+
+
+/* ================================
+   TABLE
+================================ */
+
+table {
+    margin-bottom: 0 !important;
+
+    border-collapse: separate;
+    border-spacing: 0;
+
+    color: #ffffff !important;
+}
+
+
+/* Sticky Header */
+
+.sticky-header th {
+    position: sticky;
+    top: 0;
+
+    z-index: 10;
+
+    padding: 17px 12px;
+
+    background: rgba(25,20,55,0.97) !important;
+
+    color: #c4b5fd !important;
+
+    font-size: 0.9rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+
+    border-bottom: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+
+/* Table Rows */
+
+tbody tr {
+    transition: all 0.25s ease;
+}
+
+tbody tr:hover {
+    background: rgba(139,92,246,0.10);
+
+    transform: scale(1.002);
+}
+
+tbody td {
+    padding: 15px 12px;
+
+    background: rgba(255,255,255,0.025) !important;
+
+    border-color: rgba(255,255,255,0.10) !important;
+
+    color: #f8fafc !important;
+}
+
+
+/* ================================
+   CHECKBOX
+================================ */
+
+.form-check-input {
+    width: 21px;
+    height: 21px;
+
+    cursor: pointer;
+
+    background-color: rgba(255,255,255,0.08);
+
+    border: 1px solid rgba(255,255,255,0.35);
+}
+
+.form-check-input:checked {
+    background-color: #8b5cf6;
+
+    border-color: #8b5cf6;
+
+    box-shadow:
+        0 0 12px rgba(139,92,246,0.6);
+}
+
+
+/* ================================
+   INPUT FIELDS
+================================ */
+
+.form-control {
+    border: 1px solid rgba(255,255,255,0.15);
+
+    background: rgba(255,255,255,0.07);
+
+    color: #ffffff;
+
+    border-radius: 9px;
+
+    transition: all 0.25s ease;
+}
+
+.form-control::placeholder {
+    color: #94a3b8;
+}
+
+.form-control:focus {
+    color: #ffffff;
+
+    background: rgba(255,255,255,0.11);
+
+    border-color: #8b5cf6;
+
+    box-shadow:
+        0 0 0 3px rgba(139,92,246,0.18);
+}
+
+
+/* ================================
+   GITHUB INPUT
+================================ */
+
+.input-group {
+    min-width: 260px;
+}
+
+.input-group-text {
+    background: rgba(255,255,255,0.08);
+
+    border: 1px solid rgba(255,255,255,0.15);
+
+    color: #ffffff;
+}
+
+
+/* ================================
+   SAVE BUTTON
+================================ */
+
+.save-btn {
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 7px 17px;
+
+    background: linear-gradient(
+        135deg,
+        #8b5cf6,
+        #6366f1,
+        #3b82f6
+    );
+
+    color: #ffffff;
+
+    font-weight: 600;
+
+    box-shadow:
+        0 5px 15px rgba(99,102,241,0.3);
+
+    transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 22px rgba(99,102,241,0.5);
+}
+
+.save-btn:active {
+    transform: scale(0.96);
+}
+
+
+/* ================================
+   DATE
+================================ */
+
+td strong {
+    color: #c4b5fd;
+}
+
+
+/* ================================
+   TOTAL ROW
+================================ */
+
+.total-row td {
+    padding: 18px 15px;
+
+    background: linear-gradient(
+        90deg,
+        rgba(139,92,246,0.15),
+        rgba(59,130,246,0.15)
+    ) !important;
+
+    border-top: 1px solid rgba(255,255,255,0.15) !important;
+}
+
+.total-row strong {
+    color: #ffffff;
+
+    font-size: 1rem;
+}
+
+.total-badge {
+    padding: 9px 16px;
+
+    border-radius: 20px;
+
+    background: linear-gradient(
+        135deg,
+        #10b981,
+        #059669
+    );
+
+    color: white;
+
+    font-size: 0.95rem;
+
+    box-shadow:
+        0 5px 15px rgba(16,185,129,0.3);
+}
+
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 768px) {
+
+    .container {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .page-header {
+        flex-direction: column;
+
+        align-items: flex-start !important;
+
+        gap: 15px;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .back-btn {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    .tracker-card {
+        border-radius: 15px;
+    }
+
+    .sticky-header th {
+        font-size: 0.75rem;
+
+        padding: 12px 8px;
+    }
+
+    tbody td {
+        padding: 10px 7px;
+    }
+
+    .input-group {
+        min-width: 220px;
+    }
+}
