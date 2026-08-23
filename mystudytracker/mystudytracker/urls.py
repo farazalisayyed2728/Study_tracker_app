@@ -4,5 +4,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),  # Adds login, logout, password reset
-    path('home/<int:goal_id>/', include('track.urls')),
+    path('', include('track.urls')),
 ]
