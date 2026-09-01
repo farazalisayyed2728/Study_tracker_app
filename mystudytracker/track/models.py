@@ -24,25 +24,46 @@ class StudyGoal(models.Model):
 
 
 class DailyLog(models.Model):
-    goal = models.ForeignKey(StudyGoal, on_delete=models.CASCADE, related_name='daily_logs')
+    goal = models.ForeignKey(
+        StudyGoal,
+        on_delete=models.CASCADE,
+        related_name='daily_logs'
+    )
     date = models.DateField()
-    
+
     # Morning Session
     morning_done = models.BooleanField(default=False)
+    morning_not_studied = models.BooleanField(default=False)
     morning_hours = models.DecimalField(
-        max_digits=4, decimal_places=1, default=0.0,
-        validators=[MinValueValidator(0.0), MaxValueValidator(24.0)]
+        max_digits=4,
+        decimal_places=1,
+        default=0.0,
+        validators=[
+            MinValueValidator(0.0),
+            MaxValueValidator(24.0)
+        ]
     )
-    
+
     # Evening Session
     evening_done = models.BooleanField(default=False)
+    evening_not_studied = models.BooleanField(default=False)
     evening_hours = models.DecimalField(
-        max_digits=4, decimal_places=1, default=0.0,
-        validators=[MinValueValidator(0.0), MaxValueValidator(24.0)]
+        max_digits=4,
+        decimal_places=1,
+        default=0.0,
+        validators=[
+            MinValueValidator(0.0),
+            MaxValueValidator(24.0)
+        ]
     )
-    
+
     # Integration / Tracking
-    github_link = models.URLField(max_length=500, blank=True, null=True, help_text="GitHub commit/repo link")
+    github_link = models.URLField(
+        max_length=500,
+        blank=True,
+        null=True,
+        help_text="GitHub commit/repo link"
+    )
     github_pushed = models.BooleanField(default=False)
 
     class Meta:
