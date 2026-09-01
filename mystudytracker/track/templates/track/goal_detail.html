@@ -22,17 +22,42 @@
       .total-row {
         font-weight: bold;
         background-color: #e9ecef;
+      } /* Study Status Button */
+      .study-status {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        border: 2px solid #dc3545;
+        background-color: #fff;
+        color: #dc3545;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      } /* Studied */
+      .study-status.done {
+        background-color: #198754;
+        border-color: #198754;
+        color: white;
+      }
+      .study-status:hover {
+        transform: scale(1.08);
+      } /* Hide actual checkbox */
+      .hidden-checkbox {
+        display: none;
       }
     </style>
-    <a href="{% url 'home_detail' goal.id %}">View {{ goal.title }}</a>
   </head>
   <body class="bg-light">
     <div class="container py-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>&lt; {{ goal.title }} &gt;</h2>
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary"
-          >Back to Dashboard</a
-        >
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">
+          Back to Dashboard
+        </a>
       </div>
       <div class="card shadow-sm">
         <div class="card-body">
@@ -40,13 +65,13 @@
             <table class="table table-bordered align-middle text-center">
               <thead class="sticky-header">
                 <tr>
-                  <th scope="col">Morning</th>
-                  <th scope="col">Hours</th>
-                  <th scope="col">Evening</th>
-                  <th scope="col">Hours</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">GitHub</th>
-                  <th scope="col">Action</th>
+                  <th>Morning</th>
+                  <th>Hours</th>
+                  <th>Evening</th>
+                  <th>Hours</th>
+                  <th>Date</th>
+                  <th>GitHub</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -54,11 +79,13 @@
                 <tr>
                   <form action="{% url 'track_log' log.id %}" method="POST">
                     {% csrf_token %}
+                    <!-- MORNING -->
                     <td>
                       <input
                         type="checkbox"
                         name="morning_done"
-                        class="form-check-input"
+                        id="morning_{{ log.id }}"
+                        class="hidden-checkbox"
                         {%
                         if
                         log.morning_done
@@ -66,22 +93,33 @@
                         endif
                         %}
                       />
+                      <label
+                        for="morning_{{ log.id }}"
+                        class="study-status {% if log.morning_done %}done{% endif %}"
+                        onclick="toggleStatus(this)"
+                      >
+                        {% if log.morning_done %} ✓ {% else %} ✗ {% endif %}
+                      </label>
                     </td>
+                    <!-- MORNING HOURS -->
                     <td>
                       <input
                         type="number"
                         step="0.5"
+                        min="0"
                         name="morning_hours"
                         value="{{ log.morning_hours }}"
                         class="form-control text-center"
                         style="width: 80px; margin: auto"
                       />
                     </td>
+                    <!-- EVENING -->
                     <td>
                       <input
                         type="checkbox"
                         name="evening_done"
-                        class="form-check-input"
+                        id="evening_{{ log.id }}"
+                        class="hidden-checkbox"
                         {%
                         if
                         log.evening_done
@@ -89,18 +127,29 @@
                         endif
                         %}
                       />
+                      <label
+                        for="evening_{{ log.id }}"
+                        class="study-status {% if log.evening_done %}done{% endif %}"
+                        onclick="toggleStatus(this)"
+                      >
+                        {% if log.evening_done %} ✓ {% else %} ✗ {% endif %}
+                      </label>
                     </td>
+                    <!-- EVENING HOURS -->
                     <td>
                       <input
                         type="number"
                         step="0.5"
+                        min="0"
                         name="evening_hours"
                         value="{{ log.evening_hours }}"
                         class="form-control text-center"
                         style="width: 80px; margin: auto"
                       />
                     </td>
-                    <td><strong>{{ log.date|date:"d-m-Y" }}</strong></td>
+                    <!-- DATE -->
+                    <td><strong> {{ log.date|date:"d-m-Y" }} </strong></td>
+                    <!-- GITHUB -->
                     <td>
                       <div class="input-group">
                         <div class="input-group-text">
@@ -125,6 +174,7 @@
                         />
                       </div>
                     </td>
+                    <!-- SAVE -->
                     <td>
                       <button type="submit" class="btn btn-sm btn-primary">
                         Save
@@ -134,15 +184,16 @@
                 </tr>
                 {% endfor %}
               </tbody>
+              <!-- TOTAL -->
               <tfoot>
                 <tr class="total-row">
                   <td colspan="4" class="text-end">
                     <strong>Total Hours =</strong>
                   </td>
                   <td colspan="3" class="text-start">
-                    <span class="badge bg-success fs-6"
-                      >{{ goal.total_hours }} Hours</span
-                    >
+                    <span class="badge bg-success fs-6">
+                      {{ goal.total_hours }} Hours
+                    </span>
                   </td>
                 </tr>
               </tfoot>
@@ -151,5 +202,18 @@
         </div>
       </div>
     </div>
+    <script>
+      function toggleStatus(button) {
+        const checkbox = document.getElementById(button.getAttribute("for"));
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) {
+          button.classList.add("done");
+          button.innerHTML = "✓";
+        } else {
+          button.classList.remove("done");
+          button.innerHTML = "✗";
+        }
+      }
+    </script>
   </body>
 </html>
