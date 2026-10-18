@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.http import JsonResponse
 
@@ -18,7 +16,7 @@ def dashboard(request):
     goals = StudyGoal.objects.filter(
         user=request.user,
         is_active=True
-    )
+    ).prefetch_related('daily_logs')
 
     return render(
         request,
@@ -74,6 +72,8 @@ def update_log(request, log_id):
 
     if form.is_valid():
         form.save()
+    else:
+        messages.error(request, 'Please correct the invalid study log values.')
 
     return redirect(
         'home_detail',
@@ -114,6 +114,11 @@ def toggle_log_status(request, log_id):
         )
 
         data = json.loads(request.body)
+        if not isinstance(data, dict):
+            return JsonResponse({
+                'status': 'error',
+                'message': 'JSON object required'
+            }, status=400)
 
         # Supported fields
         field_name = data.get('field')
@@ -121,15 +126,37 @@ def toggle_log_status(request, log_id):
 
         if field_name in [
             'morning_done',
+            'morning_not_studied',
             'evening_done',
+            'evening_not_studied',
             'github_pushed'
         ]:
+            if not isinstance(value, bool):
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Boolean value required'
+                }, status=400)
 
             setattr(
                 log,
                 field_name,
                 value
             )
+
+            if value and field_name in ('morning_done', 'morning_not_studied'):
+                paired_field = (
+                    'morning_not_studied'
+                    if field_name == 'morning_done'
+                    else 'morning_done'
+                )
+                setattr(log, paired_field, False)
+            elif value and field_name in ('evening_done', 'evening_not_studied'):
+                paired_field = (
+                    'evening_not_studied'
+                    if field_name == 'evening_done'
+                    else 'evening_done'
+                )
+                setattr(log, paired_field, False)
 
             log.save()
 

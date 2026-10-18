@@ -1,31 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Study Tracker - Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light">
-<div class="container py-5">
-    <h1 class="mb-4">My Study Goals</h1>
-    <div class="row">
-        {% for goal in goals %}
-        <div class="col-md-4 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">&lt; {{ goal.title }} &gt;</h5>
-                    <p class="card-text">Total Hours Logged: <strong>{{ goal.total_hours }} hrs</strong></p>
-                    <a href="{% url 'home_detail' goal.id %}" class="btn btn-primary">View Tracker Sheet</a>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <p>No active study goals found. Create one in Django Admin!</p>
-        </div>
-        {% endfor %}
+{% extends "track/base.html" %}
+{% block title %}Dashboard · Studyspace{% endblock %}
+
+{% block content %}
+<section class="hero-panel">
+  <div class="hero-copy">
+    <p class="eyebrow">YOUR PERSONAL LEARNING ORBIT</p>
+    <h1>Make room for<br /><span>what matters.</span></h1>
+    <p class="hero-description">
+      Small, focused sessions add up. Keep your goals in view and your momentum moving.
+    </p>
+    <a href="{% url 'create_goal' %}" class="primary-button">
+      <span aria-hidden="true">+</span> Create a study goal
+    </a>
+  </div>
+  <div class="orbit-visual" aria-hidden="true">
+    <div class="orbit-ring orbit-ring-one"></div>
+    <div class="orbit-ring orbit-ring-two"></div>
+    <div class="orbit-core"><span>FOCUS</span></div>
+    <span class="orbit-dot orbit-dot-one"></span>
+    <span class="orbit-dot orbit-dot-two"></span>
+  </div>
+</section>
+
+<section class="section-heading">
+  <div>
+    <p class="eyebrow">YOUR WORKSPACE</p>
+    <h2>Active goals <span class="goal-count">{{ goals|length }}</span></h2>
+  </div>
+</section>
+
+<div class="goal-grid">
+  {% for goal in goals %}
+  <article class="goal-card">
+    <div class="card-orb" aria-hidden="true"></div>
+    <div class="goal-card-content">
+      <div class="goal-card-top">
+        <span class="goal-symbol" aria-hidden="true">✳</span>
+        <span class="status-pill"><span></span> IN PROGRESS</span>
+      </div>
+      <p class="goal-dates">{{ goal.start_date|date:"M d, Y" }} — {{ goal.end_date|date:"M d, Y" }}</p>
+      <h3>{{ goal.title }}</h3>
+      <div class="goal-hours">
+        <strong>{{ goal.total_hours|default:"0" }}</strong>
+        <span>hours invested</span>
+      </div>
+      <a href="{% url 'home_detail' goal.id %}" class="card-link">
+        Open tracker <span aria-hidden="true">↗</span>
+      </a>
     </div>
+  </article>
+  {% empty %}
+  <div class="empty-state">
+    <div class="empty-icon" aria-hidden="true">✦</div>
+    <h3>Your next chapter starts here</h3>
+    <p>Create a goal to make a clear, calm space for your learning progress.</p>
+    <a href="{% url 'create_goal' %}" class="secondary-button">Create your first goal</a>
+  </div>
+  {% endfor %}
 </div>
-</body>
-</html>
+{% endblock %}

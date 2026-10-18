@@ -1,10 +1,7 @@
 from django.db import models
-
-# Create your models here.
-
-from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 
 class StudyGoal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='study_goals')
@@ -72,3 +69,14 @@ class DailyLog(models.Model):
 
     def __str__(self):
         return f"{self.goal.title} - {self.date}"
+
+    def clean(self):
+        super().clean()
+        for session in ('morning', 'evening'):
+            if getattr(self, f'{session}_done') and getattr(
+                self, f'{session}_not_studied'
+            ):
+                raise ValidationError({
+                    f'{session}_not_studied':
+                    'A session cannot be marked both studied and not studied.'
+                })

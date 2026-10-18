@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 import dj_database_url
-from pathlib import Path
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,12 +23,27 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-j%s45_e$u5xw4n7rh(=n!c2k80ue=!w^y2_rgo!i^rueu2)a8)'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'insecure-development-key-change-before-deploying',
+)
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+IS_VERCEL = os.environ.get('VERCEL') == '1'
+if IS_VERCEL and not os.environ.get('DJANGO_SECRET_KEY'):
+    raise ImproperlyConfigured('Set DJANGO_SECRET_KEY in the Vercel environment.')
 
+DEBUG = os.environ.get(
+    'DJANGO_DEBUG',
+    'false' if IS_VERCEL else 'true',
+).lower() in ('1', 'true', 'yes')
 ALLOWED_HOSTS = ['.vercel.app', 'localhost', '127.0.0.1']
+if os.environ.get('DJANGO_ALLOWED_HOSTS'):
+    ALLOWED_HOSTS.extend(
+        host.strip()
+        for host in os.environ['DJANGO_ALLOWED_HOSTS'].split(',')
+        if host.strip()
+    )
+CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app']
 
 
 # Application definition
@@ -45,13 +60,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'mystudytracker.urls'
@@ -80,9 +95,16 @@ WSGI_APPLICATION = 'mystudytracker.wsgi.application'
 
 
 
+if IS_VERCEL and not os.environ.get('DATABASE_URL'):
+    raise ImproperlyConfigured(
+        'Set DATABASE_URL to a persistent PostgreSQL database in Vercel.'
+    )
+
 DATABASES = {
-    "default": dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+        ssl_require=IS_VERCEL,
     )
 }
 
@@ -117,12 +139,27 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+    },
+}
 
-# Security settings (Disabled for local dev)
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = IS_VERCEL and not DEBUG
+SECURE_HSTS_SECONDS = 31536000 if IS_VERCEL and not DEBUG else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = IS_VERCEL and not DEBUG
+SECURE_HSTS_PRELOAD = IS_VERCEL and not DEBUG
+SESSION_COOKIE_SECURE = IS_VERCEL and not DEBUG
+CSRF_COOKIE_SECURE = IS_VERCEL and not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_REFERRER_POLICY = 'same-origin'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Auth Redirects
 LOGIN_REDIRECT_URL = 'dashboard'

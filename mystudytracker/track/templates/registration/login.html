@@ -1,32 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login - Study Tracker</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="bg-light d-flex align-items-center justify-content-center vh-100">
-<div class="card shadow p-4" style="width: 350px;">
-    <h3 class="card-title text-center mb-4">Study Tracker Login</h3>
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label">Username</label>
-            <input type="text" name="username" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary w-100">Log In</button>
+{% extends "track/base.html" %}
+{% block title %}Sign in · Studyspace{% endblock %}
 
-        {% comment %} <div class="text-center mt-3">
-    <p class="mb-0 text-muted">Don't have an account? 
-        <a href="{% url 'register' %}" class="text-decoration-none font-bold">Sign Up Here</a>
-    </p>
-</div> {% endcomment %}
-
+{% block content %}
+<section class="login-layout">
+  <div class="login-panel">
+    <div class="login-icon" aria-hidden="true">S</div>
+    <p class="eyebrow">WELCOME BACK</p>
+    <h1>Return to your<br /><span>focus space.</span></h1>
+    {% if form.errors %}<div class="field-errors">Your username and password didn't match. Please try again.</div>{% endif %}
+    <form method="post" class="goal-form">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ next }}" />
+      <div class="form-field">
+        <label for="id_username">Username</label>
+        <input id="id_username" type="text" name="username" class="form-control" autocomplete="username" required autofocus />
+      </div>
+      <div class="form-field">
+        <label for="id_password">Password</label>
+        <input id="id_password" type="password" name="password" class="form-control" autocomplete="current-password" required />
+      </div>
+      <button type="submit" class="primary-button">Sign in <span aria-hidden="true">↗</span></button>
     </form>
-</div>
-</body>
-</html>
+  </div>
+</section>
+{% endblock %}

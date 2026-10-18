@@ -35,6 +35,16 @@ class StudyGoalForm(forms.ModelForm):
             ),
         }
 
+    def clean(self):
+        cleaned_data = super().clean()
+        start_date = cleaned_data.get('start_date')
+        end_date = cleaned_data.get('end_date')
+
+        if start_date and end_date and end_date < start_date:
+            self.add_error('end_date', 'End date must be on or after the start date.')
+
+        return cleaned_data
+
 
 class DailyLogForm(forms.ModelForm):
     class Meta:
@@ -42,8 +52,10 @@ class DailyLogForm(forms.ModelForm):
 
         fields = [
             'morning_done',
+            'morning_not_studied',
             'morning_hours',
             'evening_done',
+            'evening_not_studied',
             'evening_hours',
             'github_pushed',
             'github_link'
@@ -64,6 +76,12 @@ class DailyLogForm(forms.ModelForm):
                 }
             ),
 
+            'morning_not_studied': forms.CheckboxInput(
+                attrs={
+                    'class': 'form-check-input'
+                }
+            ),
+
             'evening_done': forms.CheckboxInput(
                 attrs={
                     'class': 'form-check-input study-checkbox'
@@ -75,6 +93,12 @@ class DailyLogForm(forms.ModelForm):
                     'class': 'form-control',
                     'step': '0.5',
                     'min': '0'
+                }
+            ),
+
+            'evening_not_studied': forms.CheckboxInput(
+                attrs={
+                    'class': 'form-check-input'
                 }
             ),
 
