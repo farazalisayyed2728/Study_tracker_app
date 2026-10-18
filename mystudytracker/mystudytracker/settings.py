@@ -28,9 +28,14 @@ SECRET_KEY = os.environ.get(
     'insecure-development-key-change-before-deploying',
 )
 
-IS_VERCEL = os.environ.get('VERCEL') == '1'
-if IS_VERCEL and not os.environ.get('DJANGO_SECRET_KEY'):
-    raise ImproperlyConfigured('Set DJANGO_SECRET_KEY in the Vercel environment.')
+IS_VERCEL = os.environ.get("VERCEL") == "1"
+
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+
+if IS_VERCEL and not SECRET_KEY:
+    raise ImproperlyConfigured(
+        "Set DJANGO_SECRET_KEY in the Vercel environment."
+    )
 
 DEBUG = os.environ.get(
     'DJANGO_DEBUG',
