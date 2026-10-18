@@ -33,23 +33,10 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 if not SECRET_KEY:
     if IS_VERCEL:
         raise ImproperlyConfigured(
-            "DJANGO_SECRET_KEY is missing from Vercel environment variables."
+            "DJANGO_SECRET_KEY is missing from Vercel."
         )
+
     SECRET_KEY = "django-insecure-local-development-only-key"
-
-
-IS_VERCEL = os.environ.get("VERCEL") == "1"
-
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-
-print("VERCEL detected:", IS_VERCEL)
-print("DJANGO_SECRET_KEY configured:", bool(SECRET_KEY))
-
-if IS_VERCEL and not SECRET_KEY:
-    raise ImproperlyConfigured(
-        "Set DJANGO_SECRET_KEY in the Vercel environment."
-    )
-
 
 
 DEBUG = os.environ.get(
