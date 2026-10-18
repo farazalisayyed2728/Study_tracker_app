@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import dj_database_url
 from django.core.exceptions import ImproperlyConfigured
+from django.core.serializers import python
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,19 +25,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-SECRET_KEY = os.environ.get(
-    'DJANGO_SECRET_KEY',
-    'insecure-development-key-change-before-deploying',
-)
-
+# Environment configuration
 IS_VERCEL = os.environ.get("VERCEL") == "1"
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 
-if IS_VERCEL and not SECRET_KEY:
-    raise ImproperlyConfigured(
-        "Set DJANGO_SECRET_KEY in the Vercel environment."
-    )
+if not SECRET_KEY:
+    if IS_VERCEL:
+        raise ImproperlyConfigured(
+            "DJANGO_SECRET_KEY is missing from Vercel environment variables."
+        )
+    SECRET_KEY = "django-insecure-local-development-only-key"
+
 
 
 DEBUG = os.environ.get(
